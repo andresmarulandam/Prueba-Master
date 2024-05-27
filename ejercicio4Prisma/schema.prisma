@@ -1,0 +1,67 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Usuario {
+  id            Int           @id @default(autoincrement())
+  nombre        String
+  email         String        @unique
+  fechaRegistro DateTime      @default(now())
+  autores       Autor[]
+  comentarios   Comentario[]
+  reviews       Review[]
+  colaboradores Colaborador[]
+}
+
+model Autor {
+  id        Int     @id @default(autoincrement())
+  usuario   Usuario @relation(fields: [usuarioId], references: [id])
+  usuarioId Int
+  videos    Video[]
+}
+
+model Video {
+  id               Int           @id @default(autoincrement())
+  titulo           String
+  descripcion      String?
+  fechaPublicacion DateTime      @default(now())
+  autor            Autor         @relation(fields: [autorId], references: [id])
+  autorId          Int
+  colaboradores    Colaborador[]
+  comentarios      Comentario[]
+  reviews          Review[]
+}
+
+model Colaborador {
+  id        Int     @id @default(autoincrement())
+  video     Video   @relation(fields: [videoId], references: [id])
+  videoId   Int
+  usuario   Usuario @relation(fields: [usuarioId], references: [id])
+  usuarioId Int
+}
+
+model Comentario {
+  id        Int      @id @default(autoincrement())
+  contenido String
+  fecha     DateTime @default(now())
+  video     Video    @relation(fields: [videoId], references: [id])
+  videoId   Int
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
+  usuarioId Int
+}
+
+model Review {
+  id         Int      @id @default(autoincrement())
+  rating     Int      @default(1)
+  comentario String?
+  fecha      DateTime @default(now())
+  video      Video    @relation(fields: [videoId], references: [id])
+  videoId    Int
+  usuario    Usuario  @relation(fields: [usuarioId], references: [id])
+  usuarioId  Int
+}

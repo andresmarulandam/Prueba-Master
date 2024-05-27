@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS Usuarios (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    fecha_registro DATE NOT NULL
+);
